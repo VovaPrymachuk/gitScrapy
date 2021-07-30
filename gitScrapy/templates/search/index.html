@@ -14,10 +14,10 @@
 </head>
 
 <body>
-  <div class="container col-6">
+  <div class="container col-6 mt-5">
     <h1 class="text-center">Enter GitHub Login</h1>
     <hr>
-    <form action="result" method="POST">
+    <form method="POST">
       {% csrf_token %}
       <div class="form-group">
         <input name="gitLogin" type="text" class="form-control" id="GitHubLogin" placeholder="Example GitHub Login">
@@ -27,6 +27,27 @@
       </div>
     </form>
   </div>
+
+  <hr>
+
+  {% if name %}
+  <div class="container col-9">
+    <h1 class="text-center">{{ name }}</h1>
+    <hr>
+  </div>
+  {% endif %}
+
+  {% if repos %}
+  <div class="container col-9">
+    <ul class="list-group list-group-flush">
+      {% for repo in repos %}
+      <li class="list-group-item">{{repo}}</li>
+      {% endfor %}
+    </ul>
+
+  </div>
+  {% endif %}
+
 </body>
 
 </html>
