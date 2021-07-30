@@ -1,13 +1,29 @@
-from django.shortcuts import render
+import requests
+from django.shortcuts import redirect, render, HttpResponse
 
 
 def getLogin(request):
     if request.method == 'POST':
         username = request.POST['gitLogin']
+
+        if username == '':
+            return redirect('getLogin')
+
+        users = requests.get(
+            'https://api.github.com/users/{}'.format(username))
+        repos = requests.get(
+            'https://api.github.com/users/{}/repos'.format(username))
+
+        repo_list = []
+        for repo in repos.json():
+            repo_list.append(repo['name'])
+
+        print(repo_list)
+
         context = {
-            'username': username
+            'name': users.json()['name'],
+            'repos': repo_list
         }
-        print(type(context), context['username'])
-        return render(request, 'search/result.html', context)
+        return render(request, 'search/index.html', context)
 
     return render(request, 'search/index.html')
