@@ -19,6 +19,13 @@
     <hr>
     <form method="POST">
       {% csrf_token %}
+
+      {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-danger mt-3" role="alert">{{ message }}</div>
+      {% endfor %}
+      {% endif %}
+
       <div class="form-group">
         <input name="gitLogin" type="text" class="form-control" id="GitHubLogin" placeholder="Example GitHub Login">
         <div class="d-grid gap-2 mt-3">
