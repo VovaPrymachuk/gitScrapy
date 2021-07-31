@@ -1,5 +1,6 @@
 import requests
-from django.shortcuts import redirect, render, HttpResponse
+from django.shortcuts import redirect, render
+from django.contrib import messages
 
 
 def getLogin(request):
@@ -7,6 +8,7 @@ def getLogin(request):
         username = request.POST['gitLogin']
 
         if username == '':
+            messages.error(request, 'Please enter username!')
             return redirect('getLogin')
 
         users = requests.get(
