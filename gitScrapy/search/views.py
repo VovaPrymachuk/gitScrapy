@@ -11,14 +11,21 @@ def getLogin(request):
             messages.error(request, 'Please enter username!')
             return redirect('getLogin')
 
-        exception = '₴@~#$%&*,<>'
+        exception = '₴@~#$%&*,<>!?\\/|+'
         for el in list(username):
             if el in exception:
-                messages.error(request, 'Username cannot consist "₴@~#$%&*,<>"!')
+                messages.error(
+                    request, 'Username cannot consist "₴@~#$%&*,<>"!?\\/|+')
                 return redirect('getLogin')
 
-        users = requests.get(
+        user = requests.get(
             'https://api.github.com/users/{}'.format(username))
+
+        if not user:
+            messages.error(
+                request, 'User with username "{}" does not exist.'.format(username))
+            return redirect('getLogin')
+
         repos = requests.get(
             'https://api.github.com/users/{}/repos'.format(username))
 
@@ -27,7 +34,7 @@ def getLogin(request):
             repo_list.append(repo['name'])
 
         context = {
-            'name': users.json()['name'],
+            'name': user.json()['name'],
             'repos': repo_list
         }
         return render(request, 'search/index.html', context)
