@@ -18,24 +18,39 @@ def getLogin(request):
                     request, 'Username cannot consist "₴@~#$%&*,<>"!?\\/|+')
                 return redirect('getLogin')
 
-        user = requests.get(
-            'https://api.github.com/users/{}'.format(username))
+        headers = {"Authorization": "bearer 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"}
+        query = """
+        {
+          user(login: "%s") {
+            name
+            repositories(first: 100) {
+              nodes{
+                name
+              }
+            }
+          }
+        }
+        """ % username
+        url = 'https://api.github.com/graphql'
 
-        if not user:
+        req = requests.post(url, json={'query': query}, headers=headers)
+        req = req.json()
+
+        repos = []
+        r = req.pop('data')
+        if r['user'] != None:
+            r = r.pop('user')
+            full_name = r['name']
+            for el in r['repositories'].pop('nodes'):
+                repos.append(el['name'])
+        else:
             messages.error(
                 request, 'User with username "{}" does not exist.'.format(username))
             return redirect('getLogin')
 
-        repos = requests.get(
-            'https://api.github.com/users/{}/repos'.format(username))
-
-        repo_list = []
-        for repo in repos.json():
-            repo_list.append(repo['name'])
-
         context = {
-            'name': user.json()['name'],
-            'repos': repo_list
+            'name': full_name,
+            'repos': repos,
         }
         return render(request, 'search/index.html', context)
 
