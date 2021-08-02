@@ -16,13 +16,14 @@ def getLogin(request):
         for el in list(username):
             if el in exception:
                 messages.error(
-                    request, 'Username cannot consist "₴@~#$%&*,<>"!?\\/|+')
+                    request, 'Username cannot consist "₴@~#$%&*,<>!?\\/|+"')
                 return redirect('getLogin')
 
         query = """
         {
           user(login: "%s") {
             name
+            avatarUrl
             repositories(first: 100) {
               nodes{
                 name
@@ -40,19 +41,25 @@ def getLogin(request):
 
         repos = []
         r = req.pop('data')
-        if r['user'] != None:
+        if r['user'] is not None:
             r = r.pop('user')
             full_name = r['name']
+            avatar = r['avatarUrl']
             for el in r['repositories'].pop('nodes'):
                 repos.append(el['name'])
         else:
             messages.error(
-                request, 'User with username "{}" does not exist.'.format(username))
+                request,
+                'User with username "{}" does not exist.'.format(username))
             return redirect('getLogin')
+
+        print('...............................................')
+        print(avatar)
 
         context = {
             'login': username,
             'name': full_name,
+            'avatar': avatar,
             'repos': repos,
         }
         return render(request, 'search/index.html', context)
