@@ -1,6 +1,7 @@
 import requests
 from django.shortcuts import redirect, render
 from django.contrib import messages
+from django.conf import settings
 
 
 def getLogin(request):
@@ -18,7 +19,6 @@ def getLogin(request):
                     request, 'Username cannot consist "₴@~#$%&*,<>"!?\\/|+')
                 return redirect('getLogin')
 
-        headers = {"Authorization": "bearer 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"}
         query = """
         {
           user(login: "%s") {
@@ -31,7 +31,9 @@ def getLogin(request):
           }
         }
         """ % username
-        url = 'https://api.github.com/graphql'
+
+        headers = {"Authorization": settings.GITHUB_TOKEN}
+        url = settings.GITHUB_API_URL
 
         req = requests.post(url, json={'query': query}, headers=headers)
         req = req.json()
