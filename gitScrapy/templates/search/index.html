@@ -37,23 +37,28 @@
 
   <hr>
 
-  {% if name %}
+  {% if not messages %}
   <div class="container col-9">
+    {% if name %}
     <h1 class="text-center">{{ name }}</h1>
     <hr>
-  </div>
-  {% endif %}
+    {% else %}
+    <p class="text-center">User with login "{{ login }}" did not specify his name.</p>
+    <hr>
+    {% endif %}
 
-  {% if repos %}
-  <div class="container col-9">
+    {% if repos %}
     <ul class="list-group list-group-flush">
       {% for repo in repos %}
       <li class="list-group-item">{{repo}}</li>
       {% endfor %}
     </ul>
-
+    {% else %}
+    <p class="text-center">User with login "{{ login }}" did hasn't any repositories.</p>
+    {% endif %}
   </div>
   {% endif %}
+
 
 </body>
 
