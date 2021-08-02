@@ -51,6 +51,7 @@ def getLogin(request):
             return redirect('getLogin')
 
         context = {
+            'login': username,
             'name': full_name,
             'repos': repos,
         }
