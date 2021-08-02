@@ -40,17 +40,24 @@
   {% if not messages %}
   <div class="container col-9">
     {% if name %}
-    <h1 class="text-center">{{ name }}</h1>
-    <hr>
-    {% else %}
-    <p class="text-center">User with login "{{ login }}" did not specify his name.</p>
-    <hr>
+    <div class="name-block">
+      <span class="circle-image ">
+        <img src="{{ avatar }}" alt="User photo">
+      </span>
+      <h2 class="text-center">{{ name }}</h2>
+      <hr>
+      {% else %}
+      <p class="text-center">User with login "{{ login }}" did not specify his name.</p>
+      <hr>
+    </div>
     {% endif %}
+  </div>
 
+  <div class="container col-9">
     {% if repos %}
     <ul class="list-group list-group-flush">
       {% for repo in repos %}
-      <li class="list-group-item">{{repo}}</li>
+      <li class="list-group-item">{{ repo }}</li>
       {% endfor %}
     </ul>
     {% else %}
@@ -58,7 +65,6 @@
     {% endif %}
   </div>
   {% endif %}
-
 
 </body>
 
