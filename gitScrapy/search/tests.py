@@ -38,6 +38,8 @@ class LogicTestCase(TestCase):
     def test_response_content(self):
         response = process_response('trco')
         response = response.json()
+        valid_photo_url = 'https://avatars.githubusercontent.com/u/33464584?'\
+                          'u=e33dfcb4cdbd62ae77880036ef7146840d8339c0&v=4'
         repos = []
 
         r = response.pop('data')
@@ -49,7 +51,7 @@ class LogicTestCase(TestCase):
 
         self.assertEqual(full_name, 'Uroš Trstenjak')
         self.assertEqual(
-            avatar, 'https://avatars.githubusercontent.com/u/33464584?u=e33dfcb4cdbd62ae77880036ef7146840d8339c0&v=4')
+                        avatar, valid_photo_url)
         self.assertEqual(len(repos), 28)
 
     def test_user_has_not_fullname(self):
