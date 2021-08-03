@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.conf import settings
 from django.views.generic import View
 
-from .query import get_query
+from .utils import get_query, process_response
 
 
 class GetLogin(View):
@@ -13,9 +13,6 @@ class GetLogin(View):
 
     def post(self, request):
         username = request.POST['gitLogin']
-        query = get_query(username)
-        headers = {"Authorization": settings.GITHUB_TOKEN}
-        url = settings.GITHUB_API_URL
 
         if username == '':
             messages.error(request, 'Please enter username!')
@@ -28,7 +25,7 @@ class GetLogin(View):
                     request, 'Username cannot consist "₴@~#$%&*,<>!?\\/|+"')
                 return redirect('getLogin')
 
-        req = requests.post(url, json={'query': query}, headers=headers)
+        req = process_response(username)
         req = req.json()
 
         repos = []
