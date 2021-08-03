@@ -20,6 +20,14 @@ def get_query(username):
     return query
 
 
+def process_response(username):
+    query = get_query(username)
+    headers = {"Authorization": settings.GITHUB_TOKEN}
+    url = settings.GITHUB_API_URL
+    req = requests.post(url, json={'query': query}, headers=headers)
+    return req
+
+
 def url_exists(url):
     r = requests.get(url)
     if r.status_code == 200:
@@ -27,11 +35,3 @@ def url_exists(url):
 
     elif r.status_code == 404:
         return False
-
-
-def process_response(username):
-    query = get_query(username)
-    headers = {"Authorization": settings.GITHUB_TOKEN}
-    url = settings.GITHUB_API_URL
-    r = requests.post(url, json={'query': query}, headers=headers)
-    return r
