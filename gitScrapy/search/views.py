@@ -2,11 +2,20 @@ import requests
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.conf import settings
+from django.views.generic import View
+
+from .query import get_query
 
 
-def getLogin(request):
-    if request.method == 'POST':
+class GetLogin(View):
+    def get(self, request):
+        return render(request, 'search/index.html')
+
+    def post(self, request):
         username = request.POST['gitLogin']
+        query = get_query(username)
+        headers = {"Authorization": settings.GITHUB_TOKEN}
+        url = settings.GITHUB_API_URL
 
         if username == '':
             messages.error(request, 'Please enter username!')
@@ -18,23 +27,6 @@ def getLogin(request):
                 messages.error(
                     request, 'Username cannot consist "₴@~#$%&*,<>!?\\/|+"')
                 return redirect('getLogin')
-
-        query = """
-        {
-          user(login: "%s") {
-            name
-            avatarUrl
-            repositories(first: 100) {
-              nodes{
-                name
-              }
-            }
-          }
-        }
-        """ % username
-
-        headers = {"Authorization": settings.GITHUB_TOKEN}
-        url = settings.GITHUB_API_URL
 
         req = requests.post(url, json={'query': query}, headers=headers)
         req = req.json()
@@ -53,9 +45,6 @@ def getLogin(request):
                 'User with username "{}" does not exist.'.format(username))
             return redirect('getLogin')
 
-        print('...............................................')
-        print(avatar)
-
         context = {
             'login': username,
             'name': full_name,
@@ -63,5 +52,3 @@ def getLogin(request):
             'repos': repos,
         }
         return render(request, 'search/index.html', context)
-
-    return render(request, 'search/index.html')
