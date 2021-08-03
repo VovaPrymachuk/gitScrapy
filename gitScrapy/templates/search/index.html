@@ -37,7 +37,7 @@
 
   <hr>
 
-  {% if not messages %}
+  {% if not messages and login %}
   <div class="container col-9">
     {% if name %}
     <div class="name-block">
@@ -61,7 +61,7 @@
       {% endfor %}
     </ul>
     {% else %}
-    <p class="text-center">User with login "{{ login }}" did hasn't any repositories.</p>
+    <p class="text-center">User with login "{{ login }}" hasn't any repositories.</p>
     {% endif %}
   </div>
   {% endif %}
