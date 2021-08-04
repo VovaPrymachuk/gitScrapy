@@ -1,0 +1,1 @@
+web: guniconr gitScrapy.wsgi --log-file -
